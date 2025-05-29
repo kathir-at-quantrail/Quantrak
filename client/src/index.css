@@ -1,0 +1,440 @@
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        /* Animations */
+        /* Slide-in Animation */
+        @keyframes slideIn {
+                from {
+                        transform: translateY(-100%);
+                        opacity: 0;
+                }
+
+                to {
+                        transform: translateY(0);
+                        opacity: 1;
+                }
+        }
+
+        .slide-in {
+                animation: slideIn 0.5s ease-out forwards;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+                from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                }
+
+                to {
+                        opacity: 1;
+                        transform: translateY(0);
+                }
+        }
+
+        .fade-in {
+                animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Logout Button Core Style */
+        .logout-btn {
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                color: #694CE7;
+                background-color: white;
+                position: relative;
+                overflow: hidden;
+        }
+
+        /* Subtle lift and shadow on hover */
+        .logout-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Icon hover animation */
+        .logout-btn svg {
+                transition: transform 0.2s ease;
+        }
+
+        .logout-btn:hover svg {
+                transform: scale(1.15);
+        }
+
+        /* Gradient hover effect background */
+        .hover-effect-active::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, rgba(125, 95, 255, 0.25), rgba(93, 63, 211, 0.25));
+                z-index: 0;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+                border-radius: inherit;
+        }
+
+        .logout-btn:hover::before {
+                opacity: 1;
+        }
+
+        /* Ensure content stays above ::before */
+        .logout-btn>* {
+                position: relative;
+                z-index: 1;
+        }
+
+        .home-container h1 {
+                font-size: 1.75rem;
+                /* Default large text */
+        }
+
+        .home-container p {
+                font-size: 1rem;
+        }
+
+        .home-container .info-card {
+                padding: 1rem;
+                gap: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+                .navbar {
+                        padding: 0.5rem 1rem;
+                }
+
+                .logout-btn {
+                        padding: 0.5rem;
+                }
+
+                .logout-btn span {
+                        display: none;
+                }
+
+                .login-container {
+                        padding: 2rem;
+                        margin: 1.5rem;
+                }
+
+                h2 {
+                        font-size: 1.75rem;
+                }
+
+                input {
+                        padding: 0.9rem;
+                        font-size: 0.95rem;
+                }
+
+                button {
+                        padding: 0.9rem;
+                        font-size: 0.95rem;
+                }
+
+                .google-btn {
+                        font-size: 0.9rem;
+                }
+
+                .admin-container {
+                        padding: 2rem 1.5rem;
+                }
+
+                .admin-heading h1 {
+                        font-size: 2rem;
+                }
+
+                .admin-heading p {
+                        font-size: 1rem;
+                }
+
+                .admin-card {
+                        padding: 1.5rem;
+                }
+
+                .admin-icon-container {
+                        padding: 0.75rem;
+                }
+
+                .admin-form-container {
+                        padding: 2rem 1.5rem;
+                }
+
+                .admin-form-input {
+                        font-size: 0.95rem;
+                }
+
+                .admin-form-title h2 {
+                        font-size: 1.5rem;
+                }
+
+                .admin-user-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 10px;
+                }
+
+                .admin-user-search {
+                        width: 100% !important;
+                }
+
+                .admin-user-title {
+                        font-size: 1.3rem !important;
+                        /* text-lg */
+                }
+
+                .home-container {
+                        padding: 1.5rem;
+                }
+
+                .home-container h1 {
+                        font-size: 1.5rem;
+                }
+
+                .home-container p {
+                        font-size: 0.95rem;
+                }
+
+                .home-container .info-card {
+                        padding: 0.9rem;
+                }
+        }
+
+        @media (max-width: 640px) {
+                .navbar {
+                        padding: 0.5rem;
+                }
+
+                .navbar span.text-2xl {
+                        font-size: 1.5rem;
+                }
+
+                footer {
+                        padding: 1.5rem 0.75rem;
+                }
+
+                .login-container {
+                        padding: 1.5rem;
+                        margin: 1rem;
+                }
+
+                h2 {
+                        font-size: 1.5rem;
+                }
+
+                input {
+                        padding: 0.85rem;
+                }
+
+                button {
+                        padding: 0.85rem;
+                }
+
+                .admin-container {
+                        padding: 1.5rem 1rem;
+                }
+
+                .admin-heading h1 {
+                        font-size: 1.75rem;
+                }
+
+                .admin-card h3 {
+                        font-size: 1.125rem;
+                }
+
+                .admin-card p {
+                        font-size: 0.875rem;
+                }
+
+                .admin-form-wrapper {
+                        padding: 2rem 1rem;
+                }
+
+                .admin-form-container {
+                        max-width: 100%;
+                        padding: 2rem 1rem;
+                }
+
+                .admin-form-title h2 {
+                        font-size: 1.4rem;
+                }
+
+                .admin-icon {
+                        width: 3rem;
+                        height: 3rem;
+                }
+
+                .admin-user-table table {
+                        font-size: 0.875rem;
+                        /* text-sm */
+                }
+
+                .admin-user-row th,
+                .admin-user-row td {
+                        padding-left: 0.75rem;
+                        /* px-3 */
+                        padding-right: 0.75rem;
+                        white-space: nowrap;
+                }
+
+                .admin-user-title {
+                        font-size: 1rem;
+                        /* text-base */
+                }
+
+                .admin-user-search input {
+                        font-size: 0.875rem;
+                        /* text-sm */
+                }
+
+                .home-container {
+                        padding: 1.2rem;
+                }
+
+                .home-container h1 {
+                        font-size: 1.3rem;
+                }
+
+                .home-container p {
+                        font-size: 0.9rem;
+                }
+
+                .home-container .info-card {
+                        padding: 0.8rem;
+                }
+        }
+
+        @media (max-width: 360px) {
+                .navbar span {
+                        font-size: 1rem;
+                }
+
+                .navbar img {
+                        height: 8vw;
+                        width: 8vw;
+                }
+
+                .navbar span.text-2xl {
+                        font-size: 1.25rem;
+                }
+
+                .logout-btn {
+                        padding: 0.25rem;
+                }
+
+                footer img {
+                        height: 7vw;
+                        width: 7vw;
+                        min-height: 20px;
+                        min-width: 20px;
+                }
+
+                footer span {
+                        font-size: 1rem;
+                }
+
+                footer p {
+                        font-size: 0.75rem;
+                }
+
+                .login-container {
+                        padding: 1rem;
+                        margin: 0.5rem;
+                }
+
+                h2 {
+                        font-size: 1.3rem;
+                }
+
+                input {
+                        padding: 0.75rem;
+                        font-size: 0.85rem;
+                }
+
+                button {
+                        padding: 0.75rem;
+                        font-size: 0.85rem;
+                }
+
+                .logo {
+                        height: 9vw;
+                        width: 9vw;
+                        min-height: 32px;
+                        min-width: 32px;
+                }
+
+                .forgot-password {
+                        font-size: 0.8rem;
+                }
+
+                .or-divider {
+                        font-size: 0.8rem;
+                }
+
+                .admin-container {
+                        padding: 1.25rem 0.75rem;
+                }
+
+                .admin-heading h1 {
+                        font-size: 1.5rem;
+                }
+
+                .admin-card {
+                        padding: 1.25rem;
+                }
+
+                .admin-icon {
+                        font-size: 1.5rem;
+                }
+
+                .admin-form-input {
+                        font-size: 0.9rem;
+                        padding: 0.5rem 0.75rem;
+                }
+
+                .admin-submit-button {
+                        font-size: 0.875rem;
+                }
+
+                .admin-form-title h2 {
+                        font-size: 1.25rem;
+                }
+
+                .admin-user-title {
+                        font-size: 0.875rem;
+                        /* text-sm */
+                }
+
+                .admin-user-search input {
+                        font-size: 0.75rem;
+                        /* text-xs */
+                        padding: 0.4rem 0.6rem 0.4rem 2rem;
+                }
+
+                .admin-user-search {
+                        width: 100% !important;
+                }
+
+                .admin-user-table table {
+                        font-size: 0.75rem;
+                        /* text-xs */
+                }
+
+                .admin-user-row th,
+                .admin-user-row td {
+                        padding-left: 0.5rem;
+                        padding-right: 0.5rem;
+                }
+
+                .home-container {
+                        padding: 1rem;
+                }
+
+                .home-container p {
+                        font-size: 0.85rem !;
+                }
+
+                .home-container .info-card {
+                        padding: 0.7rem;
+                }
+        }
