@@ -156,7 +156,6 @@ router.post('/leave', authenticateUser, async (req, res) => {
 });
 
 // Get user attendance history
-// Get user attendance history
 router.get('/history', authenticateUser, async (req, res) => {
   try {
     // Get all attendance records
@@ -372,10 +371,6 @@ router.get('/admin/user/:id', authenticateUser, async (req, res) => {
 // Get all users attendance summary (for comparison)
 router.get('/admin/summary', authenticateUser, async (req, res) => {
   try {
-    if (req.user.role !== 'Admin') {
-      return res.status(403).json({ error: 'Unauthorized access' });
-    }
-
     const { position } = req.query;
 
     // Get all users
@@ -476,10 +471,6 @@ router.get('/admin/summary', authenticateUser, async (req, res) => {
 // Local holidays CRUD
 router.post('/admin/holidays', authenticateUser, async (req, res) => {
   try {
-    if (req.user.role !== 'Admin') {
-      return res.status(403).json({ error: 'Unauthorized access' });
-    }
-
     const { name, start_date, end_date, reason } = req.body;
 
     // Validation
@@ -528,10 +519,6 @@ router.post('/admin/holidays', authenticateUser, async (req, res) => {
 
 router.get('/admin/holidays', authenticateUser, async (req, res) => {
   try {
-    if (req.user.role !== 'Admin') {
-      return res.status(403).json({ error: 'Unauthorized access' });
-    }
-
     const { type = 'upcoming' } = req.query;
     const today = new Date().toISOString().split('T')[0];
 

@@ -404,34 +404,36 @@ const AdminUserAttendance = () => {
                   <div className="mb-6">
                     <h3 className="text-lg font-bold mb-2">Leave History</h3>
                     <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {userData.leaves.map((leave) => (
-                            <tr key={leave.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                {new Date(leave.start_date).toLocaleDateString()} - {new Date(leave.end_date).toLocaleDateString()}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                  leave.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                  leave.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                                  leave.status === 'auto-generated' ? 'bg-gray-100 text-gray-800' : 'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {leave.status === 'auto-generated' ? 'System Generated' : leave.status}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">{leave.reason}</td>
+                      <div className="max-h-96 overflow-y-auto"> {/* Added scrollable container */}
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50 sticky top-0">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {userData.leaves.map((leave) => (
+                              <tr key={leave.id}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  {new Date(leave.start_date).toLocaleDateString()} - {new Date(leave.end_date).toLocaleDateString()}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                    leave.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                    leave.status === 'rejected' ? 'bg-red-100 text-red-800' : 
+                                    leave.status === 'auto-generated' ? 'bg-gray-100 text-gray-800' : 'bg-yellow-100 text-yellow-800'
+                                  }`}>
+                                    {leave.status === 'auto-generated' ? 'System Generated' : leave.status}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">{leave.reason}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </>

@@ -547,7 +547,7 @@ const UserAttendance = ({ name }) => {
         {/* Attendance Statistics */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{firstName}'s Attendance Statistics (as of {new Date().toLocaleDateString()})</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{firstName}'s Attendance Statistics (till {new Date().toLocaleDateString()})</h2>
             
             {/* Desktop grid */}
             <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
