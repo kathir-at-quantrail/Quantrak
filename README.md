@@ -171,4 +171,4 @@ Quantrak provides a comprehensive solution for employee attendance tracking with
 💡 **Note:** This is a mini-project demonstrating full-stack development capabilities and is not a production-ready system.  
 
 ## 🌐 Check the Live App  
-[Click here to view the app on Vercel!]()
+[Click here to view the app on Vercel!](https://quantrak.vercel.app)
