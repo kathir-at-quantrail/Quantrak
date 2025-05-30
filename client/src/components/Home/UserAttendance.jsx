@@ -54,13 +54,13 @@ const UserAttendance = ({ name }) => {
       try {
         setLoading(true);
         const todayStr = formatDate(new Date());
-        
+
         // Fetch attendance history
         const { data: attendanceResponse } = await API.get('/attendance/history');
         setAttendanceData(attendanceResponse.attendance);
         setLeaveData(attendanceResponse.leaves);
         setStats(attendanceResponse.stats);
-        
+
         // Fetch user details to get start date
         try {
           const { data: userResponse } = await API.get('/users/me');
@@ -69,7 +69,7 @@ const UserAttendance = ({ name }) => {
           console.log('Could not fetch user start date, using current month');
           setUserStartDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
         }
-        
+
         // Fetch all holidays (past and upcoming)
         try {
           const { data: holidaysResponse } = await API.get('/attendance/admin/holidays?type=all');
@@ -78,7 +78,7 @@ const UserAttendance = ({ name }) => {
           console.log('No holiday access, proceeding without holiday data');
           setHolidays([]);
         }
-        
+
       } catch (err) {
         console.error('Error fetching attendance data:', err);
         setError(err.response?.data?.error || 'Failed to fetch attendance data');
@@ -113,7 +113,7 @@ const UserAttendance = ({ name }) => {
   // Check if date is a holiday
   const isHoliday = (date) => {
     const dateStr = formatDate(date);
-    return holidays.some(holiday => 
+    return holidays.some(holiday =>
       dateStr >= holiday.start_date && dateStr <= holiday.end_date
     );
   };
@@ -121,7 +121,7 @@ const UserAttendance = ({ name }) => {
   // Get holiday reason if date is holiday
   const getHolidayReason = (date) => {
     const dateStr = formatDate(date);
-    const holiday = holidays.find(h => 
+    const holiday = holidays.find(h =>
       dateStr >= h.start_date && dateStr <= h.end_date
     );
     return holiday ? holiday.reason : null;
@@ -131,29 +131,29 @@ const UserAttendance = ({ name }) => {
   const handleMarkAttendance = async () => {
     const now = new Date();
     const currentHour = now.getHours();
-    
+
     if (currentHour < 9) {
       alert('Attendance cannot be marked before 9 AM');
       return;
     }
-    
+
     if (currentHour >= 17) {
       alert('Attendance marking time for today is over (after 5 PM)');
       return;
     }
-    
+
     if (isWeekend(now)) {
       const dayName = now.getDay() === 0 ? 'Sunday' : 'Saturday';
       alert(`You cannot mark attendance as it is weekend (${dayName}). Enjoy your weekend!`);
       return;
     }
-    
+
     if (isHoliday(now)) {
       const reason = getHolidayReason(now);
       alert(`Attendance cannot be marked today as it is a local holiday due to: ${reason}`);
       return;
     }
-    
+
     try {
       await API.post('/attendance/mark');
       alert('Attendance marked successfully!');
@@ -167,39 +167,39 @@ const UserAttendance = ({ name }) => {
   // Apply for leave
   const handleApplyLeave = async () => {
     const { start_date, end_date, reason } = leaveForm;
-    
+
     if (!start_date || !end_date || !reason) {
       alert('All fields are required');
       return;
     }
-    
+
     const startDate = new Date(start_date);
     const endDate = new Date(end_date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (startDate < today) {
       alert('Cannot apply leave for dates before today');
       return;
     }
-    
+
     if (endDate < startDate) {
       alert('End date must be after start date');
       return;
     }
-    
+
     if (start_date === end_date && isWeekend(startDate)) {
       const dayName = startDate.getDay() === 0 ? 'Sunday' : 'Saturday';
       alert(`Leave cannot be applied as it is a weekend (${dayName}) already`);
       return;
     }
-    
+
     if (start_date === end_date && isHoliday(startDate)) {
       const reason = getHolidayReason(startDate);
       alert(`Leave cannot be applied as it is already a local holiday due to: ${reason}`);
       return;
     }
-    
+
     try {
       await API.post('/attendance/leave', leaveForm);
       alert('Leave applied successfully!');
@@ -216,7 +216,7 @@ const UserAttendance = ({ name }) => {
     if (!window.confirm('Are you sure you want to delete this leave application?')) {
       return;
     }
-    
+
     try {
       await API.delete(`/attendance/leave/${leaveId}`);
       window.location.reload();
@@ -232,36 +232,36 @@ const UserAttendance = ({ name }) => {
     const currentDay = now.getDay();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - currentDay + (currentDay === 0 ? -6 : 1)); // Monday
-    
+
     const labels = [];
     const dataPoints = [];
     let presentDays = 0;
     let totalWorkingDays = 0;
-    
+
     for (let i = 0; i < 5; i++) { // Only weekdays
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + i);
-      
+
       // Skip future dates
       if (date > now) break;
-      
+
       // Skip weekends (shouldn't happen as we're only iterating 5 days)
       if (isWeekend(date)) continue;
-      
+
       // Skip holidays
       if (isHoliday(date)) continue;
-      
+
       const dateStr = formatDate(date);
       labels.push(date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' }));
       totalWorkingDays++;
-      
+
       // Check if present
       const isPresent = attendanceData?.some(a => a.date === dateStr && a.status === 'present');
       if (isPresent) presentDays++;
-      
+
       dataPoints.push(isPresent ? 100 : 0);
     }
-    
+
     return {
       labels,
       datasets: [
@@ -284,38 +284,38 @@ const UserAttendance = ({ name }) => {
   const prepareMonthChartData = () => {
     const now = new Date();
     let startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     // If user has a start date and it's in the current month, use that
-    if (userStartDate && 
-        userStartDate.getMonth() === now.getMonth() && 
-        userStartDate.getFullYear() === now.getFullYear() &&
-        userStartDate > startDate) {
+    if (userStartDate &&
+      userStartDate.getMonth() === now.getMonth() &&
+      userStartDate.getFullYear() === now.getFullYear() &&
+      userStartDate > startDate) {
       startDate = new Date(userStartDate);
     }
-    
+
     const labels = [];
     const dataPoints = [];
     let presentDays = 0;
     let totalWorkingDays = 0;
-    
+
     for (let date = new Date(startDate); date <= now; date.setDate(date.getDate() + 1)) {
       // Skip weekends
       if (isWeekend(date)) continue;
-      
+
       // Skip holidays
       if (isHoliday(date)) continue;
-      
+
       const dateStr = formatDate(date);
       labels.push(date.getDate());
       totalWorkingDays++;
-      
+
       // Check if present
       const isPresent = attendanceData?.some(a => a.date === dateStr && a.status === 'present');
       if (isPresent) presentDays++;
-      
+
       dataPoints.push(isPresent ? 100 : 0);
     }
-    
+
     return {
       labels,
       datasets: [
@@ -361,7 +361,7 @@ const UserAttendance = ({ name }) => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Mark Today's Attendance</h2>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <div className="flex-1">
                 <input
@@ -383,7 +383,7 @@ const UserAttendance = ({ name }) => {
                 Mark Attendance
               </button>
             </div>
-            
+
             {stats?.attendancePercentage < 85 && (
               <div className="mt-4 text-red-500 text-sm">
                 Warning: Your attendance percentage is below 85%. Please improve your attendance.
@@ -396,42 +396,42 @@ const UserAttendance = ({ name }) => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Apply for Leave</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                 <input
                   type="date"
                   value={leaveForm.start_date}
-                  onChange={(e) => setLeaveForm({...leaveForm, start_date: e.target.value})}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, start_date: e.target.value })}
                   min={formatDate(new Date())}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#5D3FD3] focus:border-[#5D3FD3]"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                 <input
                   type="date"
                   value={leaveForm.end_date}
-                  onChange={(e) => setLeaveForm({...leaveForm, end_date: e.target.value})}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, end_date: e.target.value })}
                   min={leaveForm.start_date || formatDate(new Date())}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#5D3FD3] focus:border-[#5D3FD3]"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
                 <input
                   type="text"
                   value={leaveForm.reason}
-                  onChange={(e) => setLeaveForm({...leaveForm, reason: e.target.value})}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
                   placeholder="Reason for leave"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#5D3FD3] focus:border-[#5D3FD3]"
                 />
               </div>
             </div>
-            
+
             <button
               onClick={handleApplyLeave}
               className="mt-4 px-6 py-2 bg-[#5D3FD3] text-white rounded-lg hover:bg-[#4923f4] transition-colors"
@@ -445,7 +445,7 @@ const UserAttendance = ({ name }) => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Leave History</h2>
-            
+
             <div className="overflow-x-auto">
               <div className="max-h-64 overflow-y-auto">
                 {/* Desktop table */}
@@ -466,11 +466,10 @@ const UserAttendance = ({ name }) => {
                             {new Date(leave.start_date).toLocaleDateString()} - {new Date(leave.end_date).toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              leave.status === 'approved' ? 'bg-green-100 text-green-800' :
-                              leave.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`px-2 py-1 rounded-full text-xs ${leave.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                leave.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-gray-100 text-gray-800'
+                              }`}>
                               {leave.status === 'auto-generated' ? 'System Generated' : leave.status}
                             </span>
                           </td>
@@ -513,11 +512,10 @@ const UserAttendance = ({ name }) => {
                               {leave.reason}
                             </p>
                           </div>
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            leave.status === 'approved' ? 'bg-green-100 text-green-800' :
-                            leave.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full text-xs ${leave.status === 'approved' ? 'bg-green-100 text-green-800' :
+                              leave.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800'
+                            }`}>
                             {leave.status === 'auto-generated' ? 'System Generated' : leave.status}
                           </span>
                         </div>
@@ -548,32 +546,32 @@ const UserAttendance = ({ name }) => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">{firstName}'s Attendance Statistics (till {new Date().toLocaleDateString()})</h2>
-            
+
             {/* Desktop grid */}
             <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-              <StatCard 
-                title="Total Working Days" 
-                value={stats?.totalWorkingDays || 0} 
+              <StatCard
+                title="Total Working Days"
+                value={stats?.totalWorkingDays || 0}
                 icon="📅"
               />
-              <StatCard 
-                title="Present Days" 
-                value={stats?.presentDays || 0} 
+              <StatCard
+                title="Present Days"
+                value={stats?.presentDays || 0}
                 icon="✅"
               />
-              <StatCard 
-                title="Leave Days" 
-                value={stats?.leaveDays || 0} 
+              <StatCard
+                title="Leave Days"
+                value={stats?.leaveDays || 0}
                 icon="🏖️"
               />
-              <StatCard 
-                title="Days Failed to Mark" 
-                value={stats?.failedToMark || 0} 
+              <StatCard
+                title="Days Failed to Mark"
+                value={stats?.failedToMark || 0}
                 icon="❌"
               />
-              <StatCard 
-                title="Overall Attendance %" 
-                value={`${stats?.attendancePercentage || 0}%`} 
+              <StatCard
+                title="Overall Attendance %"
+                value={`${stats?.attendancePercentage || 0}%`}
                 icon="📊"
                 highlight={stats?.attendancePercentage < 85}
               />
@@ -581,34 +579,34 @@ const UserAttendance = ({ name }) => {
 
             {/* Mobile grid */}
             <div className="sm:hidden grid grid-cols-2 gap-3">
-              <StatCard 
-                title="Working Days" 
-                value={stats?.totalWorkingDays || 0} 
+              <StatCard
+                title="Working Days"
+                value={stats?.totalWorkingDays || 0}
                 icon="📅"
                 small
               />
-              <StatCard 
-                title="Present" 
-                value={stats?.presentDays || 0} 
+              <StatCard
+                title="Present"
+                value={stats?.presentDays || 0}
                 icon="✅"
                 small
               />
-              <StatCard 
-                title="Leave" 
-                value={stats?.leaveDays || 0} 
+              <StatCard
+                title="Leave"
+                value={stats?.leaveDays || 0}
                 icon="🏖️"
                 small
               />
-              <StatCard 
-                title="Failed" 
-                value={stats?.failedToMark || 0} 
+              <StatCard
+                title="Failed"
+                value={stats?.failedToMark || 0}
                 icon="❌"
                 small
               />
               <div className="col-span-2">
-                <StatCard 
-                  title="Attendance %" 
-                  value={`${stats?.attendancePercentage || 0}%`} 
+                <StatCard
+                  title="Attendance %"
+                  value={`${stats?.attendancePercentage || 0}%`}
                   icon="📊"
                   highlight={stats?.attendancePercentage < 85}
                   small
@@ -623,23 +621,23 @@ const UserAttendance = ({ name }) => {
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-gray-900">Local Holidays History</h2>
-              <button 
+              <button
                 onClick={toggleHolidaySort}
                 className="flex items-center text-sm text-[#5D3FD3] hover:text-[#4923f4]"
               >
                 {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
                   className={`h-4 w-4 ml-1 transition-transform ${sortOrder === 'desc' ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
             </div>
-            
+
             <div className="overflow-x-auto">
               <div className="max-h-96 overflow-y-auto">
                 {/* Desktop table */}
@@ -649,16 +647,13 @@ const UserAttendance = ({ name }) => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Holiday Name</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {sortedHolidays.length > 0 ? (
                       sortedHolidays.map((holiday) => {
-                        const today = new Date();
                         const endDate = new Date(holiday.end_date);
-                        const isPast = endDate < today;
-                        
+
                         return (
                           <tr key={holiday.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -670,19 +665,12 @@ const UserAttendance = ({ name }) => {
                             <td className="px-6 py-4 text-sm text-gray-900">
                               {holiday.reason}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                isPast ? 'bg-gray-100 text-gray-800' : 'bg-blue-100 text-blue-800'
-                              }`}>
-                                {isPast ? 'Past' : 'Upcoming'}
-                              </span>
-                            </td>
                           </tr>
                         );
                       })
                     ) : (
                       <tr>
-                        <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                        <td colSpan="3" className="px-6 py-4 text-center text-sm text-gray-500">
                           No holidays found
                         </td>
                       </tr>
@@ -694,10 +682,8 @@ const UserAttendance = ({ name }) => {
                 <div className="sm:hidden space-y-4">
                   {sortedHolidays.length > 0 ? (
                     sortedHolidays.map((holiday) => {
-                      const today = new Date();
                       const endDate = new Date(holiday.end_date);
-                      const isPast = endDate < today;
-                      
+
                       return (
                         <div key={holiday.id} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start">
@@ -709,11 +695,6 @@ const UserAttendance = ({ name }) => {
                                 {holiday.name}
                               </p>
                             </div>
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              isPast ? 'bg-gray-100 text-gray-800' : 'bg-blue-100 text-blue-800'
-                            }`}>
-                              {isPast ? 'Past' : 'Upcoming'}
-                            </span>
                           </div>
                           <div className="mt-2">
                             <p className="text-sm text-gray-600">
@@ -742,29 +723,27 @@ const UserAttendance = ({ name }) => {
               <div className="flex space-x-2">
                 <button
                   onClick={() => setActiveTab('week')}
-                  className={`px-4 py-2 rounded-lg text-sm ${
-                    activeTab === 'week' 
-                      ? 'bg-[#5D3FD3] text-white' 
+                  className={`px-4 py-2 rounded-lg text-sm ${activeTab === 'week'
+                      ? 'bg-[#5D3FD3] text-white'
                       : 'bg-gray-200 text-gray-800'
-                  }`}
+                    }`}
                 >
                   Current Week
                 </button>
                 <button
                   onClick={() => setActiveTab('month')}
-                  className={`px-4 py-2 rounded-lg text-sm ${
-                    activeTab === 'month' 
-                      ? 'bg-[#5D3FD3] text-white' 
+                  className={`px-4 py-2 rounded-lg text-sm ${activeTab === 'month'
+                      ? 'bg-[#5D3FD3] text-white'
                       : 'bg-gray-200 text-gray-800'
-                  }`}
+                    }`}
                 >
                   Current Month
                 </button>
               </div>
             </div>
-            
+
             <div className="h-64">
-              <Line 
+              <Line
                 data={currentChartData}
                 options={{
                   responsive: true,
@@ -782,7 +761,7 @@ const UserAttendance = ({ name }) => {
                   plugins: {
                     tooltip: {
                       callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                           return context.parsed.y === 100 ? 'Present' : 'Absent';
                         }
                       }
@@ -791,15 +770,15 @@ const UserAttendance = ({ name }) => {
                 }}
               />
             </div>
-            
+
             <div className="mt-4 text-center">
               <p className="text-gray-700">
                 {activeTab === 'week' ? 'Week' : 'Month'} Attendance: {currentChartData.presentDays} out of {currentChartData.totalWorkingDays} working days
                 (excluding holidays)
               </p>
               <p className="font-semibold">
-                Attendance Percentage: {currentChartData.totalWorkingDays > 0 
-                  ? Math.round((currentChartData.presentDays / currentChartData.totalWorkingDays) * 100) 
+                Attendance Percentage: {currentChartData.totalWorkingDays > 0
+                  ? Math.round((currentChartData.presentDays / currentChartData.totalWorkingDays) * 100)
                   : 0}%
               </p>
             </div>
