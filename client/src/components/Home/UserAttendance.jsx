@@ -620,7 +620,7 @@ const UserAttendance = ({ name }) => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Local Holidays History</h2>
+              <h2 className="text-xl font-bold text-gray-900">Local Holidays</h2>
               <button
                 onClick={toggleHolidaySort}
                 className="flex items-center text-sm text-[#5D3FD3] hover:text-[#4923f4]"
