@@ -377,7 +377,7 @@ const AdminUserAttendance = () => {
 
               {userData && (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h3 className="text-sm font-medium text-blue-800">Total Working Days</h3>
                       <p className="text-2xl font-bold text-blue-600">{userData.stats.totalWorkingDays}</p>
@@ -393,6 +393,12 @@ const AdminUserAttendance = () => {
                     <div className="bg-red-50 p-4 rounded-lg">
                       <h3 className="text-sm font-medium text-red-800">Failed to Mark</h3>
                       <p className="text-2xl font-bold text-red-600">{userData.stats.failedToMark}</p>
+                    </div>
+                    <div className="bg-indigo-50 p-4 rounded-lg">
+                      <h3 className="text-sm font-medium text-indigo-800">Start Date</h3>
+                      <p className="text-2xl font-bold text-indigo-600">
+                        {new Date(userData.user.start_date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
 
